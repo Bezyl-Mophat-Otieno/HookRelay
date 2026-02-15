@@ -24,10 +24,33 @@ public class Delivery
 
     public DateTime? ProcessedAt { get; private set; }
 
-    // private Delivery(Guid eventId, Guid webhookId, int attemptCount, DateTime, )
-    // {
-    //     
-    // } 
-    //
-    // public static Delivery Create() => new();
+    private Delivery(
+        Guid eventId, 
+        Guid webhookId, 
+        int attemptCount, 
+        DateTime? nextRetryAt, 
+        string? lastError,
+        DateTime? processedAt,
+        DeliveryStatus? status
+        )
+    {
+        EventId = eventId;
+        WebhookId = webhookId;
+        AttemptCount = attemptCount;
+        NextRetryAt = nextRetryAt;
+        CreatedAt = DateTime.UtcNow;
+        LastError = lastError;
+        ProcessedAt = processedAt;
+        Status = status ?? DeliveryStatus.Pending;
+    } 
+    
+    public static Delivery Create(        
+        Guid eventId, 
+        Guid webhookId, 
+        int attemptCount, 
+        DateTime? nextRetryAt, 
+        string? lastError, 
+        DateTime? processedAt,
+        DeliveryStatus status
+        ) => new(eventId, webhookId, attemptCount, nextRetryAt,lastError ,processedAt, status);
 }
