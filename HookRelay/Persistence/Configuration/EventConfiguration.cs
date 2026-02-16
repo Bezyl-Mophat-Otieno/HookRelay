@@ -14,5 +14,8 @@ public class EventConfiguration:IEntityTypeConfiguration<Event>
         builder.Property(e=> e.Payload).IsRequired();
         builder.Property(e => e.CreatedAt).IsRequired();
         builder.HasIndex(e => e.EventType);
+        builder.HasMany(e => e.Deliveries).WithOne(d => d.Event).HasForeignKey(d => d.EventId)
+            .OnDelete(DeleteBehavior.Restrict);
+
     }
 }

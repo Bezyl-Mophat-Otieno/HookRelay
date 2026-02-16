@@ -11,6 +11,11 @@ public class Event
 
     public IReadOnlyCollection<Delivery> Deliveries { get; private set; } = new List<Delivery>();
 
+    private Event()
+    {
+        
+    }
+
     private Event(string eventType, string payload)
     {
         EventId = Guid.NewGuid();

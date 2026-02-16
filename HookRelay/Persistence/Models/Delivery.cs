@@ -23,6 +23,8 @@ public class Delivery
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
     public DateTime? ProcessedAt { get; private set; }
+    
+    private Delivery(){}
 
     private Delivery(
         Guid eventId, 
@@ -31,9 +33,10 @@ public class Delivery
         DateTime? nextRetryAt, 
         string? lastError,
         DateTime? processedAt,
-        DeliveryStatus? status
+        DeliveryStatus status
         )
     {
+        DeliveryId= Guid.NewGuid();
         EventId = eventId;
         WebhookId = webhookId;
         AttemptCount = attemptCount;
@@ -41,7 +44,7 @@ public class Delivery
         CreatedAt = DateTime.UtcNow;
         LastError = lastError;
         ProcessedAt = processedAt;
-        Status = status ?? DeliveryStatus.Pending;
+        Status =  status;
     } 
     
     public static Delivery Create(        

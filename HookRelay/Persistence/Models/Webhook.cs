@@ -12,7 +12,12 @@ public class Webhook
 
     public bool IsActive { get; private set; } = true;
 
-    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;    
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;   
+    
+    private Webhook()
+    {
+        
+    }
     
     private Webhook(string url, string eventType, string secret)
     {
