@@ -1,3 +1,6 @@
+using HookRelay.Persistence;
+using Microsoft.EntityFrameworkCore;
+
 namespace HookRelay;
 
 public class Program
@@ -10,6 +13,9 @@ public class Program
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddDbContext<HookRelayDbContext>(options => 
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+        );
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
