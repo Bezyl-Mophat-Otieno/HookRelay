@@ -29,12 +29,11 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-        
-        // Api Endpoints
-
-
-
-
+        // 1. Register a webhook
+        var webhooks = app.MapGroup("/webhooks");
+        webhooks.MapPost("/", (HttpContext httpContext) =>
+        {
+        }).WithDisplayName("RegisterWebhook");
         app.Run();
     }
 }
