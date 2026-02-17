@@ -1,4 +1,8 @@
+using HookRelay.Dtos;
 using HookRelay.Persistence;
+using HookRelay.Persistence.Models;
+using HookRelay.Persistence.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace HookRelay;
@@ -16,6 +20,7 @@ public class Program
         builder.Services.AddDbContext<HookRelayDbContext>(options => 
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
         );
+        builder.Services.AddScoped<WebhookRepository>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -31,9 +36,11 @@ public class Program
         app.UseAuthorization();
         // 1. Register a webhook
         var webhooks = app.MapGroup("/webhooks");
-        webhooks.MapPost("/", (HttpContext httpContext) =>
+        webhooks.MapPost("/", async(RegisterWebhookRequest request, WebhookRepository repository) =>
         {
+            var webhook = Webhook.Create(request.url, request.eventType, request.secret);
+            var result = await repository.AddWebHookAsync(webhook);
+            return result.IsSuccess ? Results.Created($"/webhooks/{webhook.WebhookId}", null) : Results.BadRequest(result.ErrorMessage);
         }).WithDisplayName("RegisterWebhook");
-        app.Run();
     }
 }
