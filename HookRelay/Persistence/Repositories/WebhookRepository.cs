@@ -20,7 +20,7 @@ public class WebhookRepository(HookRelayDbContext dbContext)
             return Result<bool>.Failure(e.Message);
         }
     }
-    public async Task<Result<IEnumerable<Webhook>>> AllWebHooksAsync()
+    public async Task<Result<IEnumerable<Webhook>>> ListAllWebHooksAsync()
     {
         try
         {
