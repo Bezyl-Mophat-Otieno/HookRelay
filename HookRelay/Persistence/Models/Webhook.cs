@@ -3,7 +3,7 @@ namespace HookRelay.Persistence.Models;
 public class Webhook
 {
     public Guid WebhookId { get; private set; }
-
+    
     public string Url { get; private set; }
 
     public string EventType { get; private set; }
