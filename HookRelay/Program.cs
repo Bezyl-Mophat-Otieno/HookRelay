@@ -42,5 +42,12 @@ public class Program
             var result = await repository.AddWebHookAsync(webhook);
             return result.IsSuccess ? Results.Created($"/webhooks/{webhook.WebhookId}", null) : Results.BadRequest(result.ErrorMessage);
         }).WithDisplayName("RegisterWebhook");
+        // 1. Find a webhook by Id
+        webhooks.MapGet("/{id:guid}", async(Guid id, WebhookRepository repository) =>
+        {
+            var result = await repository.FindWebHookByIdAsync(id);
+            return result.IsSuccess ? Results.Ok() : Results.BadRequest(result.ErrorMessage);
+        }).WithDisplayName("FindWebhookById");
+        app.Run();
     }
 }
