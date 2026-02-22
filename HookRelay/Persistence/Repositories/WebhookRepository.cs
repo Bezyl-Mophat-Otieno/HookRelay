@@ -12,8 +12,7 @@ public class WebhookRepository(HookRelayDbContext dbContext)
         {
             await dbContext.AddAsync(newWebhook);
             var saved =  await dbContext.SaveChangesAsync();
-            if (saved <=0) return Result<bool>.Failure("New webhook entry failed to get saved please try again");
-            return new Result<bool>(true);
+            return saved <= 0 ? Result<bool>.Failure("New webhook entry failed to get saved please try again") : new Result<bool>(true);
         }
         catch (Exception e)
         {
@@ -36,8 +35,8 @@ public class WebhookRepository(HookRelayDbContext dbContext)
     {
         try
         {
-            var weebhook = await dbContext.Webhooks.FindAsync(weebhookId);
-            return Result<Webhook>.Success(weebhook);
+            var webhook = await dbContext.Webhooks.FindAsync(weebhookId);
+            return Result<Webhook>.Success(webhook);
         }
         catch (Exception e)
         {
