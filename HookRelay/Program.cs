@@ -21,6 +21,8 @@ public class Program
         {
             FullMode = BoundedChannelFullMode.Wait
         });
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
         builder.Services.AddAuthorization();
         builder.Services.AddOpenApi();
         builder.Services.AddSwaggerGen();
@@ -32,6 +34,7 @@ public class Program
         builder.Services.AddScoped<IQueueEventService, ChannelQueueService>();
         builder.Services.AddScoped<IEventService, EventService>();
         builder.Services.AddSingleton(channel);
+        builder.Services.AddHostedService<EventDispatcherWorker>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -66,7 +69,7 @@ public class Program
         var events = app.MapGroup("/events");
         events.MapPost("/", async (CreateEventRequest request, IEventService eventService) =>
         {
-            var newEvent = Event.Create(request.eventType, request.payload);
+            var newEvent = Event.Create(request.eventType, request.payload.GetRawText());
             var result = await eventService.CreateEventAsync(newEvent);
             return result.IsSuccess ? Results.Created($"/events/{newEvent.EventId}", null) : Results.BadRequest(result.ErrorMessage);
 
