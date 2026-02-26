@@ -18,9 +18,7 @@ pool:
   name: 'macbook-selfhosted'
 
 variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+ - group: hookrelay-ci-secrets
 
 stages:
   - stage: Build
@@ -38,13 +36,13 @@ stages:
             displayName: Restore dependencies
             inputs:
               command: restore
-              projects: '$(solution)'
+              projects: '$(SOLUTION)'
   
           - task: DotNetCoreCLI@2
             displayName: Build Solution
             inputs:
               command: build
-              projects: '$(solution)'
-              arguments: '--configuration $(buildConfiguration) --no-restore'
+              projects: '$(SOLUTION)'
+              arguments: '--configuration $(BUILD_CONF) --no-restore'
 
 
