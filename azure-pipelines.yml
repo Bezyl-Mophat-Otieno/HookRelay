@@ -36,13 +36,13 @@ stages:
             displayName: Restore dependencies
             inputs:
               command: restore
-              projects: '$(SOLUTION)'
+              projects: '$(SOLUTION_PATH)'
   
           - task: DotNetCoreCLI@2
             displayName: Build Solution
             inputs:
               command: build
-              projects: '$(SOLUTION)'
+              projects: '$(SOLUTION_PATH)'
               arguments: '--configuration $(BUILD_CONF) --no-restore'
 
 
