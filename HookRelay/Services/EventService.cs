@@ -37,4 +37,17 @@ public class EventService(EventRepository eventRepository, IQueueEventService ev
             return Result<Event>.Failure(e.Message);
         }
     }
+
+    public async Task<Result<List<Event>>> ListAllEventAsync()
+    {
+        try
+        {
+            var events = await eventRepository.GetAllEvents();
+            return Result<List<Event>>.Success(events);
+        }
+        catch (Exception e)
+        {
+            return Result<List<Event>>.Failure(e.Message);
+        }        
+    }
 }

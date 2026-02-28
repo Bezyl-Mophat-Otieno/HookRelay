@@ -19,4 +19,8 @@ public class EventRepository(HookRelayDbContext dbContext)
             return await dbContext.Events.FindAsync(eventId);
         
     }
+    public async Task<List<Event>> GetAllEvents()
+    {
+            return await dbContext.Events.ToListAsync();
+    }
 }
