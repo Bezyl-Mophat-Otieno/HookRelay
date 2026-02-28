@@ -30,6 +30,7 @@ public class Program
         );
         builder.Services.AddScoped<WebhookRepository>();
         builder.Services.AddScoped<EventRepository>();
+        builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddScoped<IQueueEventService, ChannelQueueService>();
         builder.Services.AddScoped<IEventService, EventService>();
         builder.Services.AddScoped<IWebhookService, WebhookService>();
@@ -79,6 +80,11 @@ public class Program
             var result = await eventService.GetEventByIdAsync(id);
             return result.IsSuccess ? Results.Ok(result.Value) : Results.BadRequest(result.ErrorMessage);
         }).WithDisplayName("GetEventById");
+        events.MapGet("/", async(IEventService eventService) =>
+        {
+            var result = await eventService.ListAllEventAsync();
+            return result.IsSuccess ? Results.Ok(result.Value) : Results.BadRequest(result.ErrorMessage);
+        }).WithDisplayName("ListAllWebhooks");
         app.Run();
     }
 }

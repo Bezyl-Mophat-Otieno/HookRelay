@@ -7,6 +7,6 @@ public interface IEventService
 {
     public Task<Result<Event>> CreateEventAsync(Event evt, CancellationToken ct=default);
     public Task<Result<Event>> GetEventByIdAsync(Guid id, CancellationToken ct=default);
-    
+    public Task<Result<List<Event>>>ListAllEventAsync();
     
 }
