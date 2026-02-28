@@ -26,6 +26,7 @@ public class EventService(EventRepository eventRepository, IQueueEventService ev
     {
         try
         {
+            if (ct.IsCancellationRequested) return Result<Event>.Failure("Event fetching request cancelled");
             var existingEvent = await eventRepository.FindEventByIdAsync(id);
             return existingEvent is null
                 ? Result<Event>.Failure("Event not found")
