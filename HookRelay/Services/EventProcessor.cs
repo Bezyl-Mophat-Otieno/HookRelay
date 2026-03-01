@@ -6,7 +6,7 @@ using HookRelay.Services.Abstractions;
 
 namespace HookRelay.Services;
 
-public class EventProcessor(WebhookRepository webhookRepository, IDeliveryQueue deliveryQueue):IEventProcessor
+public class EventProcessor(WebhookRepository webhookRepository, DeliveryRepository deliveryRepository,  IDeliveryQueue deliveryQueue):IEventProcessor
 {
     public async Task ProcessEventAsync(Event evt, CancellationToken ct)
     {
@@ -19,5 +19,11 @@ public class EventProcessor(WebhookRepository webhookRepository, IDeliveryQueue 
             webhookId: whk.WebhookId,
             status: DeliveryStatus.Pending
         ));
+        var deliveriesSaved = await deliveryRepository.AddDeliveryAsync(deliveries.ToList());
+        if (!deliveriesSaved) return;
+        foreach (var delivery in deliveries)
+        {
+            await deliveryQueue.EnqueueAsync(delivery, ct);
+        }
     }
 }

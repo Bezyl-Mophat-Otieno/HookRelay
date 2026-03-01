@@ -16,7 +16,11 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Adding an in memory channel that would act  like a in-memory queue for our events .
-        var channel = Channel.CreateBounded<Event>(new BoundedChannelOptions(100)
+        var eventsChannel = Channel.CreateBounded<Event>(new BoundedChannelOptions(100)
+        {
+            FullMode = BoundedChannelFullMode.Wait
+        });
+        var deliveryChannel = Channel.CreateBounded<Delivery>(new BoundedChannelOptions(100)
         {
             FullMode = BoundedChannelFullMode.Wait
         });
@@ -30,11 +34,13 @@ public class Program
         );
         builder.Services.AddScoped<WebhookRepository>();
         builder.Services.AddScoped<EventRepository>();
+        builder.Services.AddScoped<DeliveryRepository>();
         builder.Services.AddScoped<IEventQueue, ChannelEventQueueService>();
         builder.Services.AddScoped<IDeliveryQueue, ChannelDeliveryQueueService>();
         builder.Services.AddScoped<IEventService, EventService>();
         builder.Services.AddScoped<IWebhookService, WebhookService>();
-        builder.Services.AddSingleton(channel);
+        builder.Services.AddSingleton(eventsChannel);
+        builder.Services.AddSingleton(deliveryChannel);
         builder.Services.AddScoped<IEventProcessor, EventProcessor>();
         builder.Services.AddHostedService<EventDispatcherWorker>();
         builder.Services.AddHttpClient();
