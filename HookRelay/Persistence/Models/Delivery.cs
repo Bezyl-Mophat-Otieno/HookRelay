@@ -12,17 +12,17 @@ public class Delivery
     public Guid WebhookId { get; private set; }
     public Webhook Webhook { get; private set; } = null; // navigation property;
 
-    public DeliveryStatus Status { get; private set; } = DeliveryStatus.Pending;
+    public DeliveryStatus Status { get; set; } = DeliveryStatus.Pending;
 
-    public int AttemptCount { get; private set; } = 0;
+    public int AttemptCount { get; set; } = 0;
 
-    public DateTime? NextRetryAt { get; private set; }
+    public DateTime? NextRetryAt { get; set; }
 
-    public string? LastError { get; private set; }
+    public string? LastError { get; set; }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-    public DateTime? ProcessedAt { get; private set; }
+    public DateTime? ProcessedAt { get; set; }
     
     private Delivery(){}
 

@@ -1,8 +1,6 @@
 using System.Threading.Channels;
-using HookRelay.Persistence;
 using HookRelay.Persistence.Models;
 using HookRelay.Services.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace HookRelay.Services;
 
