@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HookRelay.Services;
 
-public class EventDispatcherWorker(Channel<Event>channel, IServiceScopeFactory scopeFactory, ILogger<EventDispatcherWorker> logger, HttpClient httpClient):BackgroundService
+public class EventDispatcherWorker(Channel<Event>channel, IServiceScopeFactory scopeFactory, ILogger<EventDispatcherWorker> logger, IHttpClientFactory httpClientFactory):BackgroundService
 {
     private const int _maxRetries = 3;
+    private HttpClient _httpClient => httpClientFactory.CreateClient();
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-
         while (!stoppingToken.IsCancellationRequested)
         {
             await foreach (var evt in channel.Reader.ReadAllAsync(stoppingToken))
@@ -48,8 +48,9 @@ public class EventDispatcherWorker(Channel<Event>channel, IServiceScopeFactory s
             try
             {
                 logger.LogInformation("Attempting delivery to webhook url: {webhookUrl}", webhook.Url);
-                var response = await httpClient.PostAsJsonAsync(webhook.Url, evt.Payload);
+                var response = await _httpClient.PostAsJsonAsync(webhook.Url, evt.Payload);
                 if (response.IsSuccessStatusCode) return;
+                attempt++;
             }
             catch
             {
@@ -57,6 +58,6 @@ public class EventDispatcherWorker(Channel<Event>channel, IServiceScopeFactory s
             }
             
         }
-        logger.LogInformation("EventId: {eventId} of EventType: {eventType} could not be delivered to the webhook url: {webhookUrl} after a maximum number of attempts", evt.EventId, evt.EventType, webhook.Url);
+        logger.LogInformation("EventId: {eventId} of EventType: {eventType} could not be delivered to the webhook url: {webhookUrl} after a maximum number of {attempts} attempts", evt.EventId, evt.EventType, webhook.Url, attempt);
     }
 }

@@ -5,7 +5,7 @@ using HookRelay.Services.Abstractions;
 
 namespace HookRelay.Services;
 
-public class EventService(EventRepository eventRepository, IQueueEventService eventService):IEventService
+public class EventService(EventRepository eventRepository, IEventQueue eventQueue):IEventService
 {
     public async Task<Result<Event>> CreateEventAsync(Event evt, CancellationToken ct = default)
     {
@@ -13,7 +13,7 @@ public class EventService(EventRepository eventRepository, IQueueEventService ev
         {
           var saved =  await eventRepository.AddEventAsync(evt);
           if(!saved) return Result<Event>.Failure("New event entry failed to get saved please try again");
-          await eventService.EnqueueAsync(evt, ct);
+          await eventQueue.EnqueueAsync(evt, ct);
           return Result<Event>.Success(evt);
         }
         catch (Exception e)
@@ -37,6 +37,7 @@ public class EventService(EventRepository eventRepository, IQueueEventService ev
             return Result<Event>.Failure(e.Message);
         }
     }
+    
 
     public async Task<Result<List<Event>>> ListAllEventAsync()
     {

@@ -21,6 +21,10 @@ public class WebhookRepository(HookRelayDbContext dbContext)
     {
             return await dbContext.Webhooks.FindAsync(weebhookId, ct);
     }
+    public async Task<List<Webhook>>GetAllWebhooksByEventType(string eventType)
+    {
+            return await dbContext.Webhooks.Where(whk=> whk.EventType == eventType && whk.IsActive == true).ToListAsync();
+    }
     public async Task<List<Webhook>> GetAllWebhooks()
     {
             return await dbContext.Webhooks.ToListAsync();

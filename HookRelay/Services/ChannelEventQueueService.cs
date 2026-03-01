@@ -4,7 +4,7 @@ using HookRelay.Services.Abstractions;
 
 namespace HookRelay.Services;
 
-public class ChannelQueueService(Channel<Event> channel): IQueueEventService
+public class ChannelEventQueueService(Channel<Event> channel): IEventQueue
 {
     public ValueTask EnqueueAsync(Event evt, CancellationToken ct = default)
     {
