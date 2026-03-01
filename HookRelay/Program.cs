@@ -42,7 +42,9 @@ public class Program
         builder.Services.AddSingleton(eventsChannel);
         builder.Services.AddSingleton(deliveryChannel);
         builder.Services.AddScoped<IEventProcessor, EventProcessor>();
+        builder.Services.AddScoped<IDeliveryProcessor, DeliveryProcessor>();
         builder.Services.AddHostedService<EventDispatcherWorker>();
+        builder.Services.AddHostedService<DeliveryDispatcherWorker>();
         builder.Services.AddHttpClient();
         var app = builder.Build();
 
