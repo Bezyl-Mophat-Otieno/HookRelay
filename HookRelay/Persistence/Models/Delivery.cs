@@ -29,7 +29,7 @@ public class Delivery
     private Delivery(
         Guid eventId, 
         Guid webhookId, 
-        int attemptCount, 
+        int? attemptCount, 
         DateTime? nextRetryAt, 
         string? lastError,
         DateTime? processedAt,
@@ -39,21 +39,21 @@ public class Delivery
         DeliveryId= Guid.NewGuid();
         EventId = eventId;
         WebhookId = webhookId;
-        AttemptCount = attemptCount;
+        AttemptCount = attemptCount ?? 0;
         NextRetryAt = nextRetryAt;
         CreatedAt = DateTime.UtcNow;
         LastError = lastError;
-        ProcessedAt = processedAt;
+        ProcessedAt = processedAt ?? DateTime.UtcNow;
         Status =  status;
     } 
     
     public static Delivery Create(        
         Guid eventId, 
         Guid webhookId, 
-        int attemptCount, 
-        DateTime? nextRetryAt, 
-        string? lastError, 
-        DateTime? processedAt,
-        DeliveryStatus status
+        DeliveryStatus status,
+        int? attemptCount = null, 
+        DateTime? nextRetryAt = null, 
+        string? lastError = null, 
+        DateTime? processedAt = null
         ) => new(eventId, webhookId, attemptCount, nextRetryAt,lastError ,processedAt, status);
 }

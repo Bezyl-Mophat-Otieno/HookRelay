@@ -15,7 +15,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+        // Adding an in memory channel that would act  like a in-memory queue for our events .
         var channel = Channel.CreateBounded<Event>(new BoundedChannelOptions(100)
         {
             FullMode = BoundedChannelFullMode.Wait
@@ -30,12 +30,14 @@ public class Program
         );
         builder.Services.AddScoped<WebhookRepository>();
         builder.Services.AddScoped<EventRepository>();
-        builder.Services.AddSingleton<HttpClient>();
-        builder.Services.AddScoped<IQueueEventService, ChannelQueueService>();
+        builder.Services.AddScoped<IEventQueue, ChannelEventQueueService>();
+        builder.Services.AddScoped<IDeliveryQueue, ChannelDeliveryQueueService>();
         builder.Services.AddScoped<IEventService, EventService>();
         builder.Services.AddScoped<IWebhookService, WebhookService>();
         builder.Services.AddSingleton(channel);
+        builder.Services.AddScoped<IEventProcessor, EventProcessor>();
         builder.Services.AddHostedService<EventDispatcherWorker>();
+        builder.Services.AddHttpClient();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
