@@ -24,7 +24,7 @@ public class EventProcessor(WebhookRepository webhookRepository, DeliveryReposit
         foreach (var delivery in deliveries)
         {
             logger.LogInformation("Enqueueing delivery: {deliveryId}", delivery.DeliveryId);
-            await deliveryQueue.EnqueueAsync(delivery, ct);
+            await deliveryQueue.EnqueueAsync(delivery.DeliveryId, ct);
         }
     }
 }
