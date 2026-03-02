@@ -4,10 +4,11 @@ using HookRelay.Services.Abstractions;
 
 namespace HookRelay.Services;
 
-public class ChannelDeliveryQueueService(Channel<Delivery> channel): IDeliveryQueue
+public class ChannelDeliveryQueueService(Channel<Guid> channel): IDeliveryQueue
 {
-    public ValueTask EnqueueAsync(Delivery delivery, CancellationToken ct = default)
+    public ValueTask EnqueueAsync(Guid deliveryId, CancellationToken ct = default)
     {
-        return channel.Writer.TryWrite(delivery) ? ValueTask.CompletedTask : channel.Writer.WriteAsync(delivery, ct);
+        return channel.Writer.TryWrite(deliveryId) ? ValueTask.CompletedTask : channel.Writer.WriteAsync(deliveryId, ct);
     }
+    
 }
