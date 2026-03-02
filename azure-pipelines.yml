@@ -44,5 +44,9 @@ stages:
               command: build
               projects: '$(SOLUTION_PATH)'
               arguments: '--configuration $(BUILD_CONF) --no-restore'
+              
+          - publish: $(Build.SourcesDirectory)
+            artifact: build-output
+            displayName: Publishing artifacts
 
 
