@@ -20,7 +20,7 @@ public class Program
         {
             FullMode = BoundedChannelFullMode.Wait
         });
-        var deliveryChannel = Channel.CreateBounded<Delivery>(new BoundedChannelOptions(100)
+        var deliveryChannel = Channel.CreateBounded<Guid>(new BoundedChannelOptions(100)
         {
             FullMode = BoundedChannelFullMode.Wait
         });

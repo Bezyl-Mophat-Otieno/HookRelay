@@ -28,7 +28,7 @@ stages:
         displayName: Build Job
         steps:
           - task: UseDotNet@2
-            displayName: 'Installing .NET SDK'
+            displayName: Installing .NET SDK
             inputs:
               packageType: sdk
               version: '9.0.x'
