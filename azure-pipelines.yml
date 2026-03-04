@@ -37,7 +37,7 @@ stages:
             inputs:
               command: restore
               projects: $(SOLUTION_PATH)
-          - script: dotnet publish  --configuration $(SOLUTION_PATH) --output $(Build.ArtifactStagingDirectory)' 
+          - script: dotnet publish  -c $(BUILD_CONF) -o $(Build.ArtifactStagingDirectory)' 
             displayName: Publish Compiled Output
   
 
