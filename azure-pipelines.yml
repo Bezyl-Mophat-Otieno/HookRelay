@@ -18,7 +18,7 @@ pool:
   name: 'macbook-selfhosted'
 
 variables:
- - group: hookrelay-ci-secrets
+ - group: ci-secrets
 
 stages:
   - stage: Build
@@ -36,16 +36,13 @@ stages:
             displayName: Restore dependencies
             inputs:
               command: restore
-              projects: '$(SOLUTION_PATH)'
+              projects: $(SOLUTION_PATH)
+          - script: dotnet publish  --configuration $(SOLUTION_PATH) --output $(Build.ArtifactStagingDirectory)' 
+            displayName: Publish Compiled Output
   
-          - task: DotNetCoreCLI@2
-            displayName: Build Solution
-            inputs:
-              command: build
-              projects: '$(SOLUTION_PATH)'
-              arguments: '--configuration $(BUILD_CONF) --no-restore'
+
               
-          - publish: $(Build.SourcesDirectory)
+          - publish: $(Build.ArtifactStagingDirectory)
             artifact: build-output
             displayName: Publishing artifacts
 
