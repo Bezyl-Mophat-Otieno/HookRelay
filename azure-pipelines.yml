@@ -45,3 +45,12 @@ stages:
             displayName: Publishing artifacts
 
 
+      - job: DownloadArtifacts
+        displayName: Investigate Artifact Contents 
+        dependsOn: Build
+      - steps:
+            - download: current
+              artifact: build-output
+            - script: ls -R $(Pipeline.Workspace)
+              
+              
