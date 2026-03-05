@@ -48,7 +48,7 @@ stages:
       - job: DownloadArtifacts
         displayName: Investigate Artifact Contents 
         dependsOn: Build
-      - steps:
+        steps:
             - download: current
               artifact: build-output
             - script: ls -R $(Pipeline.Workspace)
