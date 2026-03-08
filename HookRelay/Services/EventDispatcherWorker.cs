@@ -4,15 +4,13 @@ using HookRelay.Services.Abstractions;
 
 namespace HookRelay.Services;
 
-public class EventDispatcherWorker(Channel<Event>channel, IServiceScopeFactory scopeFactory, ILogger<EventDispatcherWorker> logger, IHttpClientFactory httpClientFactory):BackgroundService
+public class EventDispatcherWorker(Channel<Event>eventsChannel, IServiceScopeFactory scopeFactory, ILogger<EventDispatcherWorker> logger, IHttpClientFactory httpClientFactory):BackgroundService
 {
-    private const int _maxRetries = 3;
-    private HttpClient _httpClient => httpClientFactory.CreateClient();
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await foreach (var evt in channel.Reader.ReadAllAsync(stoppingToken))
+            await foreach (var evt in eventsChannel.Reader.ReadAllAsync(stoppingToken))
             {
                 var scope = scopeFactory.CreateScope();
                 var eventProcessor = scope.ServiceProvider.GetRequiredService<IEventProcessor>();
