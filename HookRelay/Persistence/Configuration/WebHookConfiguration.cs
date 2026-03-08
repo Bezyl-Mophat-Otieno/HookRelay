@@ -11,6 +11,7 @@ public class WebHookConfiguration:IEntityTypeConfiguration<Webhook>
     {
         builder.ToTable("Webhooks");
         builder.HasKey(w => w.WebhookId);
+        builder.Property(w => w.WebhookId).ValueGeneratedNever();
         builder.Property(w => w.EventType).IsRequired();
         builder.Property(w => w.Secret).IsRequired();
         builder.Property(w => w.IsActive).IsRequired();

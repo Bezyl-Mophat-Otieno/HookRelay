@@ -10,6 +10,7 @@ public class DeliveryDispatcherWorker(Channel<Guid>deliveriesChannel, IServiceSc
     {
         while (!stoppingToken.IsCancellationRequested)
         {
+            logger.LogInformation("DeliveryDispatcherWorker running...");
             await foreach (var deliveryId in deliveriesChannel.Reader.ReadAllAsync(stoppingToken))
             {
                 var scope = scopeFactory.CreateScope();

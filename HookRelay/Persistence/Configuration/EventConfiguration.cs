@@ -10,6 +10,7 @@ public class EventConfiguration:IEntityTypeConfiguration<Event>
     {
         builder.ToTable("Events");
         builder.HasKey(e => e.EventId);
+        builder.Property(e => e.EventId).ValueGeneratedNever();
         builder.Property(e=> e.EventType).IsRequired();
         builder.Property(e=> e.Payload).IsRequired();
         builder.Property(e => e.CreatedAt).IsRequired();
