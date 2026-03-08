@@ -18,8 +18,8 @@ public class EventProcessor(WebhookRepository webhookRepository, DeliveryReposit
             eventId: evt.EventId,
             webhookId: whk.WebhookId,
             status: DeliveryStatus.Pending
-        ));
-        var deliveriesSaved = await deliveryRepository.AddDeliveryAsync(deliveries.ToList());
+        )).ToList();
+        var deliveriesSaved = await deliveryRepository.AddDeliveryAsync(deliveries);
         if (!deliveriesSaved) return;
         foreach (var delivery in deliveries)
         {
