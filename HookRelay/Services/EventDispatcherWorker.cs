@@ -10,6 +10,7 @@ public class EventDispatcherWorker(Channel<Event>eventsChannel, IServiceScopeFac
     {
         while (!stoppingToken.IsCancellationRequested)
         {
+            logger.LogInformation("EventDispatcherWorker running...");
             await foreach (var evt in eventsChannel.Reader.ReadAllAsync(stoppingToken))
             {
                 var scope = scopeFactory.CreateScope();

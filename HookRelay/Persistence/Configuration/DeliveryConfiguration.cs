@@ -12,6 +12,7 @@ public class DeliveryConfiguration:IEntityTypeConfiguration<Delivery>
     {
         builder.ToTable("Deliveries");
         builder.HasKey(d=> d.DeliveryId);
+        builder.Property(d => d.DeliveryId).ValueGeneratedNever();
         builder.Property(d => d.EventId).IsRequired();
         builder.Property(d => d.WebhookId).IsRequired();
         builder.Property(d => d.Status).IsRequired();

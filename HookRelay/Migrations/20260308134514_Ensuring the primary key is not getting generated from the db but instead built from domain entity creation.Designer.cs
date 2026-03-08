@@ -4,6 +4,7 @@ using HookRelay.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HookRelay.Migrations
 {
     [DbContext(typeof(HookRelayDbContext))]
-    partial class HookRelayDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260308134514_Ensuring the primary key is not getting generated from the db but instead built from domain entity creation")]
+    partial class Ensuringtheprimarykeyisnotgettinggeneratedfromthedbbutinsteadbuiltfromdomainentitycreation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
