@@ -1,11 +1,7 @@
-using System.Threading.Channels;
 using HookRelay.Dtos;
-using HookRelay.Persistence;
+using HookRelay.Extensions;
 using HookRelay.Persistence.Models;
-using HookRelay.Persistence.Repositories;
-using HookRelay.Services;
 using HookRelay.Services.Abstractions;
-using Microsoft.EntityFrameworkCore;
 
 namespace HookRelay;
 
@@ -14,38 +10,9 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // Adding an in memory channel that would act  like a in-memory queue for our events .
-        var eventsChannel = Channel.CreateBounded<Event>(new BoundedChannelOptions(100)
-        {
-            FullMode = BoundedChannelFullMode.Wait
-        });
-        var deliveryChannel = Channel.CreateBounded<Guid>(new BoundedChannelOptions(100)
-        {
-            FullMode = BoundedChannelFullMode.Wait
-        });
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
-        builder.Services.AddAuthorization();
-        builder.Services.AddOpenApi();
-        builder.Services.AddSwaggerGen();
-        builder.Services.AddDbContext<HookRelayDbContext>(options => 
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-        );
-        builder.Services.AddScoped<WebhookRepository>();
-        builder.Services.AddScoped<EventRepository>();
-        builder.Services.AddScoped<DeliveryRepository>();
-        builder.Services.AddScoped<IEventQueue, ChannelEventQueueService>();
-        builder.Services.AddScoped<IDeliveryQueue, ChannelDeliveryQueueService>();
-        builder.Services.AddScoped<IEventService, EventService>();
-        builder.Services.AddScoped<IWebhookService, WebhookService>();
-        builder.Services.AddSingleton(eventsChannel);
-        builder.Services.AddSingleton(deliveryChannel);
-        builder.Services.AddScoped<IEventProcessor, EventProcessor>();
-        builder.Services.AddScoped<IDeliveryProcessor, DeliveryProcessor>();
-        builder.Services.AddHostedService<EventDispatcherWorker>();
-        builder.Services.AddHostedService<DeliveryDispatcherWorker>();
-        builder.Services.AddHttpClient();
+        builder.Services.AddPresentationLayerConfig(builder.Configuration);
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -57,7 +24,6 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
         var webhooks = app.MapGroup("/webhooks");
         webhooks.MapPost("/", async(RegisterWebhookRequest request, IWebhookService webhookService) =>

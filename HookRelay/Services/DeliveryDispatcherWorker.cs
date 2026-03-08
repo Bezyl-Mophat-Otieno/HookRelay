@@ -4,25 +4,25 @@ using HookRelay.Services.Abstractions;
 
 namespace HookRelay.Services;
 
-public class DeliveryDispatcherWorker(Channel<Delivery>channel, ILogger<DeliveryDispatcherWorker> logger, IServiceScopeFactory scopeFactory):BackgroundService
+public class DeliveryDispatcherWorker(Channel<Guid>deliveriesChannel, IServiceScopeFactory scopeFactory, ILogger<DeliveryDispatcherWorker> logger, IHttpClientFactory httpClientFactory):BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            await foreach (var delivery in channel.Reader.ReadAllAsync(stoppingToken))
+            await foreach (var deliveryId in deliveriesChannel.Reader.ReadAllAsync(stoppingToken))
             {
                 var scope = scopeFactory.CreateScope();
                 var deliveryProcessor = scope.ServiceProvider.GetRequiredService<IDeliveryProcessor>();
                 logger.LogInformation("DeliveryDispatcherWorker started.");
                 try
                 {
-                    logger.LogInformation("Processing Delivery {deliveryId} Created on {CreatedAt:yy-MMM-dd ddd}", delivery.DeliveryId, delivery.CreatedAt);
-                    await deliveryProcessor.ProcessDeliveryAsync(delivery.DeliveryId, stoppingToken);
+                    logger.LogInformation("Processing Delivery {deliveryId}.", deliveryId);
+                    await deliveryProcessor.ProcessDeliveryAsync(deliveryId, stoppingToken);
                 }
                 catch (Exception e)
                 {
-                    logger.LogError(e, "Error processing delivery {DeliveryId}", delivery.DeliveryId);
+                    logger.LogError(e, "Error processing delivery {DeliveryId}", deliveryId);
                 }
             }
         }
