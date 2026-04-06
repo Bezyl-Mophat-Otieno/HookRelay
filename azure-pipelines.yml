@@ -54,7 +54,6 @@ stages:
             - script: ls -R $(Pipeline.Workspace)
   - stage: Test
     displayName: Test Stage
-    depends: Build
     jobs:
       - job: Test
         displayName: Test Job
