@@ -52,5 +52,16 @@ stages:
             - download: current
               artifact: build-output
             - script: ls -R $(Pipeline.Workspace)
-              
-              
+  - stage: Test
+    displayName: Test Stage
+    depends: Build
+    jobs:
+      - job: Test
+        displayName: Test Job
+        steps:
+          - task: DotNetCoreCLI@2
+            displayName: Run Tests
+            inputs: 
+              command: test
+              projects: $(SOLUTION_PATH)
+          
